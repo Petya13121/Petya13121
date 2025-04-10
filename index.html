@@ -1,0 +1,795 @@
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audi Weboldal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #000;
+        }
+        header {
+            background: #000;
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        header img {
+            width: 100px;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #111;
+            padding: 15px;
+        }
+        nav a {
+            color: white;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            background: red;
+            border-radius: 5px;
+        }
+        .container {
+            padding: 40px;
+            text-align: center;
+        }
+        .content {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .card h3 {
+            margin-top: 15px;
+        }
+        .details {
+			display: none;
+			padding: 40px;
+			max-width: 1000px;
+			margin: 0 auto;
+			background: #fff;
+			border-radius: 20px;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+			display: flex;
+			gap: 40px;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: flex-start;
+			animation: fadeIn 0.5s ease;
+		}
+
+		#detailsImage {
+			max-width: 400px;
+			border-radius: 15px;
+			box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+			object-fit: cover;
+			width: 100%;
+		}
+
+		.details-content {
+			flex: 1;
+			min-width: 300px;
+			text-align: left;
+		}
+
+		.details-content h2 {
+			margin-top: 0;
+		}
+
+		details-content ul {
+			text-align: left;
+			padding-left: 20px;
+		}
+
+		.details-content img {
+			max-width: 150px;
+			margin: 10px;
+			border-radius: 8px;
+			transition: transform 0.3s;
+		}
+
+		.details-content img:hover {
+			transform: scale(1.05);
+		}
+
+		.details button {
+			margin-top: 20px;
+			padding: 10px 20px;
+			background: red;
+			color: white;
+			border: none;
+			border-radius: 8px;
+			font-size: 16px;
+			cursor: pointer;
+			transition: background 0.3s;
+		}
+
+		.details button:hover {
+			background: #b30000;
+		}
+
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(20px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+		
+		#lightbox {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0,0,0,0.8);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+			flex-direction: column;
+		}
+		
+		#lightbox img {
+			max-width: 90%;
+			max-height: 80%;
+			border-radius: 10px;
+			box-shadow: 0 0 20px rgba(255,255,255,0.2);
+		}
+		
+		#lightboxClose {
+			position: absolute;
+			top: 20px;
+			right: 30px;
+			font-size: 40px;
+			color: white;
+			cursor: pointer;
+		}
+		
+		#lightboxNav {
+			margin-top: 20px;
+		}
+		
+		#lightboxNav button {
+			background: none;
+			border: 2px solid white;
+			color: white;
+			font-size: 30px;
+			padding: 10px 20px;
+			margin: 0 20px;
+			cursor: pointer;
+			border-radius: 10px;
+			transition: background 0.3s;
+		}
+		
+		#lightboxNav button:hover {
+			background: white;
+			color: black;
+		}
+		
+		
+    </style>
+</head>
+<body>
+    <header>
+        <img src="audi-1-logo-black-and-white.png" alt="Audi Logo" onclick="showContent('home')">
+        <span onclick="showContent('home')" style="cursor: pointer;">Audi - Innováció és Teljesítmény</span>
+    </header>
+    <nav>
+        <a href="#" onclick="event.preventDefault(); showContent('home')">Főoldal</a>
+        <a href="#" onclick="event.preventDefault(); showContent('models')">Modellek</a>
+		<a href="#" onclick="event.preventDefault(); showContent('motorsport')">Motorsport</a>
+
+    </nav>
+    
+    <div class="container">
+        <div id="home" class="content active">
+            <h2>Üdvözöljük az Audi világában</h2>
+            <p>Fedezze fel az Audi legújabb modelljeit és motorsport sikereit.</p>
+        </div>
+        
+        <div id="models" class="content">
+            <h2>Audi Modellek</h2>
+            <div class="grid" id="modelGrid"></div>
+        </div>
+        
+        <div id="motorsport" class="content">
+            <h2>Audi Motorsport</h2>
+            <div class="grid" id="motorsportGrid"></div>
+        </div>
+        
+        <div id="details" class="details"></div>
+    </div>
+	
+	<footer>
+        <h6>Ez az oldal nem áll kapcsolatban az Audi AG-vel vagy bármely leányvállalatával.<br>
+		Az itt található információk és tartalmak nem hivatalosak, bármelyik adat eltérhet.</h6>
+    </footer>
+    
+	<div id="lightbox" style="display: none;">
+		<span id="lightboxClose" onclick="closeLightbox()">×</span>
+		<img id="lightboxImg" src="" alt="">
+		<div id="lightboxNav">
+			<button onclick="prevImage()">⟨</button>
+			<button onclick="nextImage()">⟩</button>
+		</div>
+	</div>
+	
+	<script>
+		let lastSection = 'models';
+		
+		const models = [
+			{
+				name: "Audi A1",
+				img: "Audi_A1_Sportback.jpg",
+				description: "Az Audi A1 egy kompakt, városi autó kiváló teljesítménnyel és modern designnal.",
+				specs: [
+					"<b>Kivitel:</b> Ferdehátú",
+					"<b>Motor:</b> 1.0 TFSI, 1.5 TFSI",
+					"<b>Teljesítmény:</b> 95-150 LE",
+					"<b>Nyomaték:</b> 175-250 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 8.2-6.7 mp",
+					"<b>Végsebesség:</b> 200-225 km/h",
+					"<b>Váltó:</b> 5- vagy 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_A1_Sportback.jpg",
+					"Audi_A1_Sportback_1.jpg",
+					"Audi_A1_Sportback_interior.jpg"
+				]
+			},
+			{
+				name: "Audi A3",
+				img: "Audi_A3_Sportback.jpg",
+				description: "Az Audi A3 modern dizájnja és hatékony motorja ideális városi autóvá teszi.",
+				specs: [
+					"<b>Kivitel:</b> Ferdehátú, Limuzin, Cabriolet",
+					"<b>Motor:</b> 1.0 TFSI, 1.5 TFSI, 2.0 TDI, 2.0 TFSI",
+					"<b>Teljesítmény:</b> 110-300 LE (S3, RS3)",
+					"<b>Nyomaték:</b> 200-400 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 7.3-3.8 mp (RS3)",
+					"<b>Végsebesség:</b> 220-290 km/h (RS3)",
+					"<b>Váltó:</b> 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_A3_Sportback.jpg",
+					"Audi_RS3.jpg",
+					"Audi_A3_interior.jpg"
+				]
+			},
+			{
+				name: "Audi A5",
+				img: "Audi_A5.jpg",
+				description: "Az Audi A5 egy stílusos és sportos középkategóriás autó.",
+				specs: [
+					"<b>Kivitel:</b> Coupé, Cabriolet, Sportback",
+					"<b>Motor:</b> 2.0 TFSI, 2.0 TDI, 3.0 TDI, 2.9 TFSI (RS5)",
+					"<b>Teljesítmény:</b> 190-450 LE (RS5)",
+					"<b>Nyomaték:</b> 320-600 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 5.7-3.9 mp (RS5)",
+					"<b>Végsebesség:</b> 250-280 km/h (RS5)",
+					"<b>Váltó:</b> 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_A5.jpg",
+					"Audi_S5.jpg",
+					"Audi_A5_interior.jpg"
+				]
+			},
+			{
+				name: "Audi A6",
+				img: "Audi_A6_Avant.jpg",
+				description: "Az Audi A6 tágas belső térrel és fejlett technológiákkal rendelkezik.",
+				specs: [
+					"<b>Kivitel:</b> Limuzin, Avant",
+					"<b>Motor:</b> 2.0 TDI, 2.0 TFSI, 3.0 TDI, 3.0 TFSI, 4.0 TFSI (RS6)",
+					"<b>Teljesítmény:</b> 150-600 LE (RS6)",
+					"<b>Nyomaték:</b> 320-800 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 7.3-3.6 mp (RS6)",
+					"<b>Végsebesség:</b> 250-305 km/h (RS6)",
+					"<b>Váltó:</b> 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_A6_Avant.jpg",
+					"Audi_A6_Avant_1.jpg",
+					"Audi_A6_Avant_interior.jpg"
+				]
+			},
+			{
+				name: "Audi A6 e-Tron",
+				img: "Audi_S6_E_Tron.jpg",
+				description: "Az Audi A6 e-Tron a jövő elektromos közlekedésének innovációja.",
+				specs: [
+					"<b>Kivitel:</b> Limuzin, Avant",
+					"<b>Motor:</b> Elektromos, kétmotoros rendszer",
+					"<b>Teljesítmény:</b> 350 LE",
+					"<b>Nyomaték:</b> 800 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 4.0 mp",
+					"<b>Végsebesség:</b> 200 km/h",
+					"<b>Váltó:</b> Elektromos (egyfokozatú)"
+				],
+				gallery: [
+					"Audi_S6_E_Tron.jpg",
+					"Audi_A6_eTron_1.jpg",
+					"Audi_A6_eTron_interior.jpg"
+				]
+			},
+			{
+				name: "Audi A7",
+				img: "Audi_RS7_Sportback_Performance.jpg",
+				description: "Az Audi A7 sportos eleganciát és prémium minőséget kínál.",
+				specs: [
+					"<b>Kivitel:</b> Sportback",
+					"<b>Motor:</b> 2.0 TDI, 3.0 TDI, 2.9 TFSI (RS7)",
+					"<b>Teljesítmény:</b> 204-591 LE (RS7)",
+					"<b>Nyomaték:</b> 400-800 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 5.4-3.6 mp (RS7)",
+					"<b>Végsebesség:</b> 250-305 km/h (RS7)",
+					"<b>Váltó:</b> 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_RS7_Sportback_Performance.jpg",
+					"Audi_RS7.jpg",
+					"Audi_A7_interior.jpg"
+				]
+			},
+			{
+				name: "Audi A8",
+				img: "Audi_S8.jpg",
+				description: "Az Audi A8 a luxus és a technológiai innováció csúcsa.",
+				specs: [
+					"<b>Kivitel:</b> Limuzin",
+					"<b>Motor:</b> 3.0 TDI, 3.0 TFSI, 4.0 TFSI, 6.0 W12",
+					"<b>Teljesítmény:</b> 231-571 LE (S8)",
+					"<b>Nyomaték:</b> 500-800 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 6.4-3.8 mp (S8)",
+					"<b>Végsebesség:</b> 250 km/h (S8)",
+					"<b>Váltó:</b> 8-sebességes automata, Tiptronic"
+				],
+				gallery: [
+					"Audi_S8.jpg",
+					"Audi_S8_1.jpg",
+					"Audi_A8_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q2",
+				img: "Audi_Q2.jpg",
+				description: "Az Audi Q2 kompakt SUV sportos és városi kalandor.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> 1.0 TFSI, 1.5 TFSI, 2.0 TDI",
+					"<b>Teljesítmény:</b> 116-190 LE",
+					"<b>Nyomaték:</b> 200-400 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 8.5-6.5 mp",
+					"<b>Végsebesség:</b> 210-240 km/h",
+					"<b>Váltó:</b> 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_Q2.jpg",
+					"Audi_Q2_1.jpg",
+					"Audi_Q2_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q3",
+				img: "Audi_Q3_Sportback.jpg",
+				description: "Az Audi Q3 egy sokoldalú és tágas SUV, családok számára.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> 1.5 TFSI, 2.0 TDI, 2.5 TFSI (RS Q3)",
+					"<b>Teljesítmény:</b> 150-400 LE (RS Q3)",
+					"<b>Nyomaték:</b> 250-500 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 8.2-4.5 mp (RS Q3)",
+					"<b>Végsebesség:</b> 220-280 km/h (RS Q3)",
+					"<b>Váltó:</b> 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_Q3_Sportback.jpg",
+					"Audi_Q3_1.jpg",
+					"Audi_Q3_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q4 e-Tron",
+				img: "Audi_Q4_eTron.jpg",
+				description: "Az Audi Q4 elektromos innovációjával hódít.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> Elektromos, hátsó- és összkerékhajtású (motorváltozattól függően)",
+					"<b>Teljesítmény:</b> 299 LE",
+					"<b>Nyomaték:</b> 460 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 6.3 mp",
+					"<b>Végsebesség:</b> 180 km/h",
+					"<b>Váltó:</b> Elektromos (egyfokozatú)"
+				],
+				gallery: [
+					"Audi_Q4_eTron.jpg",
+					"Audi_Q4_eTron_1.jpg",
+					"Audi_Q4_eTron_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q5",
+				img: "Audi_Q5.jpg",
+				description: "Az Audi Q5 egy prémium SUV sportos megjelenéssel.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> 2.0 TFSI, 2.0 TDI, 3.0 TDI, 2.9 TFSI (RS Q5)",
+					"<b>Teljesítmény:</b> 204-450 LE (RS Q5)",
+					"<b>Nyomaték:</b> 320-600 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 6.3-3.7 mp (RS Q5)",
+					"<b>Végsebesség:</b> 240-280 km/h (RS Q5)",
+					"<b>Váltó:</b> 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_Q5.jpg",
+					"Audi_Q5_1.jpg",
+					"Audi_Q5_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q6 e-Tron",
+				img: "Audi_Q6_eTron.jpg",
+				description: "Az Audi Q6 e-Tron a modern elektromos SUV.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> Elektromos, kétmotoros rendszer (mindkét tengelyen)",
+					"<b>Teljesítmény:</b> 435 LE",
+					"<b>Nyomaték:</b> 800 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 4.5 mp",
+					"<b>Végsebesség:</b> 200 km/h",
+					"<b>Váltó:</b> Elektromos (egyfokozatú)"
+				],
+				gallery: [
+					"Audi_Q6_eTron.jpg",
+					"Audi_Q6_eTron_1.jpg",
+					"Audi_Q6_eTron_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q7",
+				img: "Audi_Q7.jpg",
+				description: "Az Audi Q7 egy nagyobb SUV, sokoldalú kényelemmel.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> 3.0 TDI, 3.0 TFSI, 4.0 TDI",
+					"<b>Teljesítmény:</b> 231-507 LE",
+					"<b>Nyomaték:</b> 500-900 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 6.5-5.0 mp",
+					"<b>Végsebesség:</b> 240 km/h",
+					"<b>Váltó:</b> 8-sebességes automata"
+				],
+				gallery: [
+					"Audi_Q7.jpg",
+					"Audi_Q7_1.jpg",
+					"Audi_Q7_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q8",
+				img: "Audi_RS_Q8_Performance.jpg",
+				description: "Az Audi Q8 erőteljes dizájnnal és prémium luxussal.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> 3.0 TFSI, 4.0 TFSI, 3.0 TDI, 4.0 TDI (RS Q8)",
+					"<b>Teljesítmény:</b> 286-600 LE (RS Q8)",
+					"<b>Nyomaték:</b> 600-800 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 6.3-3.8 mp (RS Q8)",
+					"<b>Végsebesség:</b> 250-305 km/h (RS Q8)",
+					"<b>Váltó:</b> 8-sebességes automata"
+				],
+				gallery: [
+					"Audi_RS_Q8_Performance.jpg",
+					"Audi_RS_Q8_1.jpg",
+					"Audi_Q8_interior.jpg"
+				]
+			},
+			{
+				name: "Audi Q8 e-Tron",
+				img: "Audi_Q8_eTron.jpg",
+				description: "Az Audi Q8 e-Tron az elektromos SUV-k új generációját képviseli.",
+				specs: [
+					"<b>Kivitel:</b> SUV",
+					"<b>Motor:</b> Elektromos, kétmotoros rendszer (mindkét tengelyen)",
+					"<b>Teljesítmény:</b> 402 LE",
+					"<b>Nyomaték:</b> 664 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 5.6 mp",
+					"<b>Végsebesség:</b> 200 km/h",
+					"<b>Váltó:</b> Elektromos (egyfokozatú)"
+				],
+				gallery: [
+					"Audi_Q8_eTron.jpg",
+					"Audi_Q8_eTron_1.jpg",
+					"Audi_Q8_eTron_interior.jpg"
+				]
+			},
+			{
+				name: "Audi e-Tron GT",
+				img: "Audi_eTron_GT.jpg",
+				description: "Az Audi e-Tron GT a teljesítmény és a fenntarthatóság kombinációja.",
+				specs: [
+					"<b>Kivitel:</b> Szupersport",
+					"<b>Motor:</b> Elektromos, kétmotoros rendszer (mindkét tengelyen)",
+					"<b>Teljesítmény:</b> 476-646 LE (RS e-Tron GT)",
+					"<b>Nyomaték:</b> 630-830 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 4.1-3.3 mp (RS e-Tron GT)",
+					"<b>Végsebesség:</b> 250 km/h",
+					"<b>Váltó:</b> Elektromos (egyfokozatú)"
+				],
+				gallery: [
+					"Audi_eTron_GT.jpg",
+					"Audi_eTron_GT_1.jpg",
+					"Audi_eTron_GT_interior.jpg"
+				]
+			},
+			{
+				name: "Audi TT",
+				img: "Audi_TT.jpg",
+				description: "Az Audi TT egy sportos, kompakt kupé, amely a dinamikus vezetési élményt és a stílust ötvözi.",
+				specs: [
+					"<b>Kivitel:</b> Coupé, Roadster",
+					"<b>Motor:</b> 2.0 TFSI, 2.5 TFSI (RS TT)",
+					"<b>Teljesítmény:</b> 197-400 LE (RS TT)",
+					"<b>Nyomaték:</b> 320-480 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 6.6-3.7 mp (RS TT)",
+					"<b>Végsebesség:</b> 250-280 km/h (RS TT)",
+					"<b>Váltó:</b> 6-sebességes manuális, 7-sebességes DSG automata"
+				],
+				gallery: [
+					"Audi_TT.jpg",
+					"Audi_TT_1.jpg",
+					"Audi_TT_interior.jpg"
+				]
+			},
+			{
+				name: "Audi R8",
+				img: "Audi_R8.jpg",
+				description: "Az Audi R8 egy lenyűgöző sportautó, amely a teljesítmény, a precizitás és a luxus tökéletes kombinációját kínálja.",
+				specs: [
+					"<b>Kivitel:</b> Coupé, Spyder",
+					"<b>Motor:</b> 5.2 V10 FSI",
+					"<b>Teljesítmény:</b> 570-620 LE (R8 V10 Performance)",
+					"<b>Nyomaték:</b> 550-580 Nm",
+					"<b>Gyorsulás (0–100 km/h):</b> 3.5-3.1 mp",
+					"<b>Végsebesség:</b> 330-340 km/h",
+					"<b>Váltó:</b> 7-sebességes S tronic automata"
+				],
+				gallery: [
+					"Audi_R8.jpg",
+					"Audi_R8_Coupe_Japan_Final_Edition.jpg",
+					"Audi_R8_interior.jpg"
+				]
+			},
+		];
+
+		const motorsport = [
+			{
+				name: "Formula 1",
+				img: "Audi_F1.jpg",
+				description: "Formula 1: a világ leggyorsabb autóinak versenye.",
+				specs: [
+					"<b>Autó neve:</b> -",
+					"<b>Motor:</b> -",
+					"<b>Teljesítmény:</b> - LE",
+					"<b>Nyomaték:</b> - Nm",
+					"<b>Maximális sebesség:</b> - km/h",
+					"<b>Versenytáv:</b> -"
+				],
+				gallery: [
+					"Audi_F1.jpg"
+				]
+			},
+			{
+				name: "Formula E",
+				img: "Audi_Formula_e.jpg",
+				description: "Formula E: a fenntartható elektromos versenyautók ligája.",
+				specs: [
+					"<b>Autó neve:</b> Audi e-tron FE06",
+					"<b>Motor:</b> Elektromos, kétmotoros rendszer (mindkét tengelyen)",
+					"<b>Teljesítmény:</b> 335 LE (255 kW), kvalifikációs üzemmódban akár 402 LE (300 kW)",
+					"<b>Nyomaték:</b> 460 Nm",
+					"<b>Maximális sebesség:</b> 280 km/h",
+					"<b>Versenytáv:</b> 45-55 perc, versenyek hossza változó (általában 30-40 kör)"
+				],
+				gallery: [
+					"Audi_Formula_e.jpg",
+					"Audi_Formula_e_1.jpg"
+				]
+			},
+			{
+				name: "DTM",
+				img: "Audi_DTM_2020_autó_1.jpg",
+				description: "DTM: a túraautó-versenyek csúcsa.",
+				specs: [
+					"<b>Autó neve:</b> Audi RS5 DTM",
+					"<b>Motor:</b> 2,0 literes turbófeltöltős négyhengeres",
+					"<b>Teljesítmény:</b> 610 LE",
+					"<b>Nyomaték:</b> 700 Nm",
+					"<b>Maximális sebesség:</b> 300 km/h",
+					"<b>Versenytáv:</b> 55 perc + 1 kör"
+				],
+				gallery: [
+					"Audi_DTM_2020_autó_1.jpg",
+					"Audi_DTM_2020_autó_2.jpg",
+					"Audi_DTM_2020_2.jpg",
+					"Audi_DTM_2020_1.jpg",
+					"Audi_DTM_2020_3.jpg"
+				]
+			},
+			{
+				name: "Rally",
+				img: "Audi_Quattro.jpg",
+				description: "Rally: a legkeményebb terepen zajló autóverseny, ahol a sebesség mellett a kitartás és a vezetési tudás is döntő.",
+				specs: [
+					"<b>Autó neve:</b> Audi Quattro",
+					"<b>Motor:</b> 2,1 literes turbófeltöltős soros négyhengeres",
+					"<b>Teljesítmény:</b> 360 LE (a verseny verzióban)",
+					"<b>Nyomaték:</b> 500 Nm",
+					"<b>Maximális sebesség:</b> 200 km/h",
+					"<b>Versenytáv:</b> A rally szakaszok hossza változó, általában 10-30 km"
+				],
+				gallery: [
+					"Audi_Quattro.jpg",
+					"Audi_Rally_1.jpg"
+				]
+			},
+			{
+				name: "Dakar Rally",
+				img: "Audi_RS_Q_eTron.jpg",
+				description: "Dakar Rally: a világ legkeményebb tereprali versenye.",
+				specs: [
+					"<b>Autó neve:</b> Audi RS Q e-tron",
+					"<b>Motor:</b> Elektromos motor + 2,0 literes TFSI benzinmotor (hibrid rendszer)",
+					"<b>Teljesítmény:</b> 671 LE (500 kW összesítve)",
+					"<b>Nyomaték:</b> 800 Nm",
+					"<b>Maximális sebesség:</b> 170 km/h",
+					"<b>Versenytáv:</b> A Dakar Rally teljes távja 8,000-9,000 km, különböző szakaszok"
+				],
+				gallery: [
+					"Audi_RS_Q_eTron.jpg",
+					"Audi_RS_Q_eTron_1.jpg",
+					"Audi_RS_Q_eTron_2.jpg"
+				]
+			},
+			{
+				name: "Le Mans",
+				img: "Audi_Le_Mans.jpg",
+				description: "Le Mans: a kitartás és sebesség legendás 24 órás versenye.",
+				specs: [
+					"<b>Autó neve:</b> Audi R18 e-tron quattro",
+					"<b>Motor:</b> 3,7 literes V6 TDI dízelmotor + elektromos motor",
+					"<b>Teljesítmény:</b> 558 LE (410 kW)",
+					"<b>Nyomaték:</b> 850 Nm",
+					"<b>Maximális sebesség:</b> 330 km/h",
+					"<b>Versenytáv:</b> 24 óra (Le Mans 24 órás verseny)"
+				],
+				gallery: [
+					"Audi_Le_Mans.jpg",
+					"Audi_Le_Mans_1.jpg",
+					"Audi_Le_Mans_2.jpg"
+				]
+			}
+		];
+
+		function populateGrid(gridId, items, section) {
+			const grid = document.getElementById(gridId);
+			grid.innerHTML = "";
+			items.forEach(item => {
+				const div = document.createElement("div");
+				div.classList.add("card");
+				div.innerHTML = `<img src="${item.img}" alt="${item.name}"><h3>${item.name}</h3>`;
+				div.onclick = () => showDetails(item, section);
+				grid.appendChild(div);
+			});
+		}
+
+		function showDetails(item, section) {
+			lastSection = section;
+			document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+			document.getElementById("details").style.display = "block";
+
+			let extraContent = "";
+
+			if (item.specs) {
+				extraContent += "<h4>Műszaki adatok:</h4><ul>";
+				item.specs.forEach(spec => {
+					extraContent += `<li>${spec}</li>`;
+				});
+				extraContent += "</ul>";
+			}
+
+			if (item.gallery) {
+				extraContent += "<h4>Galéria:</h4>";
+				item.gallery.forEach((img, index) => {
+					extraContent += `<img src="${img}" style="max-width: 300px; margin: 10px; border-radius: 8px;" onclick="openLightbox(${JSON.stringify(item.gallery)}, ${index})">`;
+				});
+			}
+
+			document.getElementById("details").innerHTML = `
+				<img id="detailsImage" src="${item.img}" alt="${item.name}">
+				<div class="details-content">
+					<h2>${item.name}</h2>
+					<p>${item.description}</p>
+					${item.specs ? `
+						<h4>Műszaki adatok:</h4>
+						<ul>${item.specs.map(spec => `<li>${spec}</li>`).join('')}</ul>
+					` : ""}
+					${item.gallery ? `
+						<h4>Galéria:</h4>
+						${item.gallery.map((img, index) => `<img src="${img}" alt="${item.name}" onclick="openLightbox(${JSON.stringify(item.gallery)}, ${index})">`).join('')}
+					` : ""}
+					<button onclick="goBack()">Vissza</button>
+				</div>
+			`;
+		}
+
+		let currentGallery = [];
+		let currentIndex = 0;
+
+		function openLightbox(images, index) {
+			currentGallery = images;
+			currentIndex = index;
+			document.getElementById("lightboxImg").src = currentGallery[currentIndex];
+			document.getElementById("lightbox").style.display = "flex";
+		}
+
+		function closeLightbox() {
+			document.getElementById("lightbox").style.display = "none";
+		}
+
+		function nextImage() {
+			currentIndex = (currentIndex + 1) % currentGallery.length;
+			document.getElementById("lightboxImg").src = currentGallery[currentIndex];
+		}
+
+		function prevImage() {
+			currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+			document.getElementById("lightboxImg").src = currentGallery[currentIndex];
+		}
+
+		function showContent(id) {
+			lastSection = id;
+			document.querySelectorAll('.content, .details').forEach(el => el.style.display = 'none');
+			document.getElementById(id).style.display = "block";
+		}
+
+		function goBack() {
+			document.getElementById("details").style.display = "none";
+			document.getElementById(lastSection).style.display = "block";
+		}
+
+		populateGrid("modelGrid", models, 'models');
+		populateGrid("motorsportGrid", motorsport, 'motorsport');
+	</script>
+	
+</body>
+</html>
