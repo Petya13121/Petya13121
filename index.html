@@ -214,7 +214,24 @@
         <div id="home" class="content active">
             <h2>Üdvözöljük az Audi világában</h2>
             <p>Fedezze fel az Audi legújabb modelljeit és motorsport sikereit.</p>
-        </div>
+        <div id="heroBanner" style="position: relative; width: 100%; height: 100vh; overflow: hidden; cursor: pointer;" onclick="goToAudiA6()">
+			<img src="Audi_A6_Avant.jpg" alt="Audi A6" style="width: 100%; height: 100%; object-fit: cover;">
+			<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+						color: white; font-size: 48px; background: rgba(0,0,0,0.5); padding: 20px 40px;
+						border-radius: 10px; font-weight: bold; text-align: center;">
+				Ismerje meg az új Audi A6 Avant
+			</div>
+		</div>
+		<br>
+		<div id="heroBanner" style="position: relative; width: 100%; height: 100vh; overflow: hidden; cursor: pointer;" onclick="goToAudiQ8()">
+			<img src="Audi_RS_Q8_Performance.jpg" alt="Audi Q8" style="width: 100%; height: 100%; object-fit: cover;">
+			<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+						color: white; font-size: 48px; background: rgba(0,0,0,0.5); padding: 20px 40px;
+						border-radius: 10px; font-weight: bold; text-align: center;">
+				Ismerje meg az új Audi RS Q8 Performancet
+			</div>
+		</div>
+		</div>
         
         <div id="models" class="content">
             <h2>Audi Modellek</h2>
@@ -745,18 +762,18 @@
 					` : ""}
 					${item.gallery ? `
 						<h4>Galéria:</h4>
-						${item.gallery.map((img, index) => `<img src="${img}" alt="${item.name}" onclick="openLightbox(${JSON.stringify(item.gallery)}, ${index})">`).join('')}
+						${item.gallery.map((img, index) => `<img src="${img}" alt="${item.name}" onclick="openLightbox(${index})">`).join('')}
 					` : ""}
 					<button onclick="goBack()">Vissza</button>
 				</div>
 			`;
+			currentGallery = item.gallery;
 		}
 
 		let currentGallery = [];
 		let currentIndex = 0;
 
-		function openLightbox(images, index) {
-			currentGallery = images;
+		function openLightbox(index) {
 			currentIndex = index;
 			document.getElementById("lightboxImg").src = currentGallery[currentIndex];
 			document.getElementById("lightbox").style.display = "flex";
@@ -789,6 +806,20 @@
 
 		populateGrid("modelGrid", models, 'models');
 		populateGrid("motorsportGrid", motorsport, 'motorsport');
+	
+		function goToAudiA6() {
+			const a6 = models.find(model => model.name === "Audi A6");
+			if (a6) {
+				showDetails(a6, 'models');
+			}
+		}
+		
+		function goToAudiQ8() {
+			const q8 = models.find(model => model.name === "Audi Q8");
+			if (q8) {
+				showDetails(q8, 'models');
+			}
+		}
 	</script>
 	
 </body>
